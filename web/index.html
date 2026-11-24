@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Solve DC power flow and compare line outages on a five- to ten-bus grid.">
+  <title>Gridflow — DC Load-Flow Analyzer</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">∿</span> GRIDFLOW</div>
+      <span class="eyebrow">DC analysis <span class="divider">/</span> 100 MVA base</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow accent">Power systems lab</p>
+      <h1 id="page-title">Load-flow analyzer</h1>
+      <p>Solve the base case or take a transmission line out of service and see how power redistributes across the grid.</p>
+    </section>
+    <noscript><p class="notice problem">Enable JavaScript to run the analyzer in this browser.</p></noscript>
+
+    <div class="workspace">
+      <section class="panel network" aria-labelledby="network-title">
+        <div class="panel-heading">
+          <div><p class="eyebrow accent">01 / Topology</p><h2 id="network-title">Network</h2></div>
+          <span class="tag" id="case-label">Base case</span>
+        </div>
+        <svg id="diagram" viewBox="0 0 540 310" role="img" aria-label="Grid topology"></svg>
+        <div class="legend"><span><i class="normal"></i> Active</span><span><i class="overload"></i> Overloaded</span><span><i class="out"></i> Out of service</span><span>Bus R = reference</span></div>
+      </section>
+
+      <section class="panel scenarios" aria-labelledby="scenario-title">
+        <p class="eyebrow accent">02 / Simulation</p>
+        <h2 id="scenario-title">Scenarios</h2>
+        <form id="scenario-form">
+          <label for="outage">Line to remove</label>
+          <select id="outage"></select>
+          <div class="actions">
+            <button type="submit" id="compare">Compare outage</button>
+            <button type="button" id="base" class="secondary">Base case</button>
+          </div>
+        </form>
+        <p id="status" class="notice" role="status"></p>
+        <dl class="metrics">
+          <div><dt>Total demand</dt><dd id="demand">—</dd></div>
+          <div><dt>Peak loading</dt><dd id="peak">—</dd></div>
+          <div><dt>Overloaded lines</dt><dd id="overloaded">—</dd></div>
+        </dl>
+      </section>
+    </div>
+
+    <section class="panel results" aria-labelledby="flows-title">
+      <div class="panel-heading">
+        <div><p class="eyebrow accent">03 / Results</p><h2 id="flows-title">Line flows</h2></div>
+        <span class="detail">Positive MW flows from the listed start bus to the end bus.</span>
+      </div>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Line flows">
+        <table>
+          <thead><tr><th scope="col">Line</th><th scope="col">From → To</th><th scope="col">Limit (MW)</th><th scope="col">Base (MW)</th><th scope="col">Outage (MW)</th><th scope="col">Loading</th><th scope="col">Status</th></tr></thead>
+          <tbody id="flows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <details class="panel disclosure" id="model-editor">
+      <summary><span><span class="eyebrow accent">04 / Inputs</span><strong>Edit grid model</strong></span></summary>
+      <form id="model-form" class="details-body">
+        <p class="detail">Enter 5–10 buses. Edit one comma-separated record per line, then apply the model to solve its base case.</p>
+        <div class="inputs">
+          <div><label for="buses">Buses</label><p id="bus-format" class="detail">Bus ID, generation (MW), demand (MW)</p><textarea id="buses" rows="7" spellcheck="false" aria-describedby="bus-format" required></textarea></div>
+          <div><label for="lines">Transmission lines</label><p id="line-format" class="detail">Line ID, from bus, to bus, reactance (p.u.), limit (MW)</p><textarea id="lines" rows="7" spellcheck="false" aria-describedby="line-format"></textarea></div>
+        </div>
+        <div class="editor-actions">
+          <div><label for="reference">Reference bus ID</label><input id="reference" required></div>
+          <div class="actions"><button type="submit">Apply model</button><button type="button" id="sample" class="secondary">Load sample</button></div>
+        </div>
+        <p id="model-error" class="notice problem" role="alert" hidden></p>
+      </form>
+    </details>
+
+    <details class="panel disclosure">
+      <summary><span><span class="eyebrow accent">05 / Solver output</span><strong>Matrices &amp; bus angles</strong></span></summary>
+      <div class="details-body">
+        <p id="matrix-status" class="detail"></p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Bus angles and dispatch">
+          <table><thead><tr><th scope="col">Bus</th><th scope="col">Angle (rad)</th><th scope="col">Generation (MW)</th><th scope="col">Demand (MW)</th></tr></thead><tbody id="angles"></tbody></table>
+        </div>
+        <label for="matrix-type" class="matrix-label">Matrix</label>
+        <select id="matrix-type"><option value="matrix">Full susceptance</option><option value="reduced">Reduced susceptance</option><option value="inverse">Reduced inverse</option></select>
+        <div class="table-scroll matrix" tabindex="0" role="region" aria-label="Susceptance matrix"><table id="matrix"></table></div>
+      </div>
+    </details>
+    <footer><span class="eyebrow">GRIDFLOW / Browser edition</span><span>Changes reset when you reload the page.</span></footer>
+  </main>
+</body>
+</html>

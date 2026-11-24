@@ -2,14 +2,24 @@
 
 Project 24 · Four-person group project
 
-## Run the project
+## Run in a browser
+
+Open the deployed Netlify homepage to solve the sample grid, compare a line
+outage, edit the model, and inspect matrices and bus angles. The browser
+analyzer runs locally in the page; reloading restores the sample. Use the
+desktop edition if you need to save and reopen runs.
+
+To preview the static site locally with Python, run
+`python -m http.server 8889 --directory web` and open `http://localhost:8889`.
+
+## Run the desktop edition
 
 Extract the ZIP to a writable folder. On Windows, double-click **Open Gridflow.cmd**.
 You can also run `python app.py` from that folder. Use Python 3.10 or newer with
 Tkinter. The app uses the Python standard library and stores saved runs in
 `grid_runs.sqlite3` beside the app.
 
-## Demonstrate the sample grid
+## Demonstrate the sample grid (desktop)
 
 1. Open **Overview**. The five-bus sample opens with a solved base-case preview.
    Follow the arrows on the diagram or hover over a line for its signed flow.
@@ -30,7 +40,7 @@ For an islanding demo, choose **Edit grid → Lines**, remove L1 and choose
 **Apply model**. Then compare the outage of L2. The app identifies bus B as
 disconnected from the reference and saves the unsolved contingency.
 
-## Enter a grid
+## Enter a grid (desktop)
 
 Click **Edit lines** above the flow table to edit L1–L5 together, or double-click
 a line's result row to jump to its reactance. You can change the line ID,
